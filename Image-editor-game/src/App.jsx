@@ -1,43 +1,60 @@
 import { useState } from 'react'
-import logo from './logo.svg'
+
 import './App.css'
 
+
+
 function App() {
-  const [count, setCount] = useState(0)
+ 
+  let [img, setImage] = useState('')
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const formData = new FormData(e.target);
+    
+
+    const Upload =  await fetch('http://127.0.0.1:5000/', {
+        method: 'POST',
+        body: formData
+      })
+
+      let resp = await Upload.json()
+
+      // console.log(resp)
+
+      setImage({
+        img : resp['success']
+      })
+      
+    }
+    
+    console.log(img.img)
+    
+    
 
   return (
+    
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-      </header>
+      <form  onSubmit={handleSubmit} className="Image-continer" encType="multipart/form-data">
+          
+          <div className="contents">
+              
+              <label htmlFor="image" className="label">Image :  </label>
+              <input type="file" id="image" name="image" 
+                  accept="image/*" className="file-custom"/>
+              
+          </div>
+
+
+          <div className="btn">
+              <button type="submit" className="submit-btn">Upload,,,</button>
+          </div>
+      </form>
+
+    <div className="img-cont">
+      <img  src={`data:image/png;base64,${img.img}`} id='image' />
+    </div>
+    
     </div>
   )
 }
